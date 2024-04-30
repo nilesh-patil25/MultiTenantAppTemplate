@@ -1,0 +1,1 @@
+C:\Users\LNV-194\source\repos\MultiTenantAppTemplate\multitenantapptemplate.client\obj\Debug\multitenantapptemplate.client.esproj.CoreCompileInputs.cache
