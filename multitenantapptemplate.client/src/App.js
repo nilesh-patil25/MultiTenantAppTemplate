@@ -8,13 +8,13 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <>
-          <Link to="/">Foo</Link>
+          <Link to="/foo">Foo</Link>
           {" || "}
-          <Link to="/about">Bar</Link>
+          <Link to="/bar">Bar</Link>
         </>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/foo" element={<Home />} />
+          <Route path="/bar" element={<About />} />
         </Routes>
       </BrowserRouter>
     </div>
