@@ -1,3 +1,4 @@
+using MultiTenancyAppTemplate.Services;
 using MultiTenantAppTemplate.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ITenantService, TenantService>();
+builder.Services.AddSingleton<IImageService, ImageService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

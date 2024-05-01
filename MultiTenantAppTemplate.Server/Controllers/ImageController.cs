@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MultiTenancyAppTemplate.Services;
 using MultiTenantAppTemplate.Server.Services;
+using System.Net;
 
 namespace MultiTenantAppTemplate.Server.Controllers
 {
@@ -9,11 +11,14 @@ namespace MultiTenantAppTemplate.Server.Controllers
     public class ImageController : ControllerBase
     {
         private readonly ITenantService _tenantService;
+        private readonly IImageService _imageService;
         private readonly IConfiguration _configuration;
 
-        public ImageController(ITenantService tenantService, IConfiguration configuration)
+        public ImageController(ITenantService tenantService, IImageService imageService,
+        IConfiguration configuration)
         {
             _tenantService = tenantService;
+            _imageService = imageService;
             _configuration = configuration;
         }
         #region API
@@ -75,7 +80,7 @@ namespace MultiTenantAppTemplate.Server.Controllers
                 return StatusCode(500, $"An error occurred while uploading favicon: {ex.Message}");
             }
         }
-        
+
         [HttpGet("downloadBannerImage")]
         public IActionResult DownloadBannerImage(string hostName)
         {
@@ -86,7 +91,7 @@ namespace MultiTenantAppTemplate.Server.Controllers
                     return BadRequest("Tenant name cannot be null or empty.");
                 }
 
-                string imagePath = GetBannerImagePathForTenant(hostName, "banner");
+                string imagePath = _imageService.GetBannerImagePathForTenant(hostName, "banner");
 
                 if (string.IsNullOrEmpty(imagePath) || !System.IO.File.Exists(imagePath))
                 {
@@ -117,7 +122,7 @@ namespace MultiTenantAppTemplate.Server.Controllers
                     return BadRequest("Tenant name cannot be null or empty.");
                 }
 
-                string imagePath = GetBannerImagePathForTenant(hostName, "favicon");
+                string imagePath = _imageService.GetBannerImagePathForTenant(hostName, "favicon");
 
                 if (string.IsNullOrEmpty(imagePath) || !System.IO.File.Exists(imagePath))
                 {
@@ -138,46 +143,58 @@ namespace MultiTenantAppTemplate.Server.Controllers
             }
         }
 
-        #endregion
 
-
-        #region Methods
-        private string GetBannerImagePathForTenant(string hostName, string imageType)
+        [HttpGet("LoadImagePaths")]
+        public IActionResult LoadPath(string hostName)
         {
             try
             {
-                var basePath = _configuration.GetSection("AssetPath").Value;
-                var fileName = "";
+                var imageFiles = _imageService.GetImageFilesDetails(hostName);
+                if (imageFiles == null || !imageFiles.Any())
+                {
+                    return NotFound($"No images found for tenant '{hostName}'.");
+                }
 
-                // This is just a placeholder, replace it with your actual logic
-                string imagesFolder = Path.Combine(basePath, hostName);
-                if (!Directory.Exists(imagesFolder))
-                {
-                    return string.Empty;
-                }
-                string[] imageFiles = Directory.GetFiles(imagesFolder);
-                if (imageFiles.Length == 0)
-                {
-                    return string.Empty;
-                }
-                foreach (var imageFile in imageFiles)
-                {
-                    if (!string.IsNullOrEmpty(imageFile))
-                    {
-                        if (imageFile.Contains(imageType))
-                        {
-                            return Path.Combine(imagesFolder, imageFile);
-                        }
-                    }
-                }
-                throw new FileNotFoundException("Banner image not found for tenant.");
+                return Ok(imageFiles);
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while getting the image path for tenant");
+                return StatusCode(500, $"An error occurred while retrieving images: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetFileFromPath")]
+        public IActionResult GetFile(string relativePath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(relativePath))
+                {
+                    return BadRequest("File path cannot be null or empty.");
+                }
+
+                if (!System.IO.File.Exists(relativePath))
+                {
+                    return NotFound($"File not found at path '{relativePath}'.");
+                }
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(relativePath);
+
+                string contentType = "application/octet-stream"; // Default content type
+                if (Path.HasExtension(relativePath))
+                {
+                    string fileExtension = Path.GetExtension(relativePath);
+                    contentType = _imageService.GetContentType(fileExtension);
+                }
+
+                // Return the file as a download
+                return File(fileBytes, contentType, Path.GetFileName(relativePath));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while downloading file: {ex.Message}");
             }
         }
         #endregion
-
     }
 }
