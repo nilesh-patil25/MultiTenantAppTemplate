@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { BrowserRouter,useLocation, Route, Routes } from 'react-router-dom';
-import './App.css'; 
-import Bar from './component/Bar';
-import Foo from './component/Foo';
+import { useEffect } from "react";
+import { BrowserRouter, useLocation, Route, Routes } from "react-router-dom";
+import "./App.css";
+import Bar from "./component/Bar";
+import Foo from "./component/Foo";
 
 function App() {
   return (
@@ -18,13 +18,15 @@ function AppContent() {
   const location = useLocation();
 
   useEffect(() => {
-    const rootElement = document.getElementById('root');
+    const rootElement = document.getElementById("root");
     if (rootElement) {
-      if (location.pathname === '/foo') {
-        document.body.style.backgroundColor = '#c89666';
-      } else if(location.pathname === '/bar') {
-        document.body.style.backgroundColor = '#2d545e'; 
-      } 
+      if (location.pathname === "/foo") {
+        document.body.style.backgroundColor = "#a78436";
+      } else if (location.pathname === "/bar") {
+        document.body.style.backgroundColor = "#2d545e";
+      } else if (location.pathname === "/") {
+        document.body.style.backgroundColor = "#a78436";
+      }
     }
   }, [location]);
 
