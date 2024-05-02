@@ -1,6 +1,6 @@
 import "./App.css";
-import About from "./component/About";
-import Home from "./component/Home";
+import Bar from "./component/Bar";
+import Foo from "./component/Foo";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 
 function App() {
@@ -8,13 +8,14 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <>
-          <Link to="/foo">Foo</Link>
-          {" || "}
-          <Link to="/bar">Bar</Link>
+          <Link to="/foo"></Link>
+
+          <Link to="/bar"></Link>
         </>
         <Routes>
-          <Route path="/foo" element={<Home />} />
-          <Route path="/bar" element={<About />} />
+          <Route path="/" element={<Foo />} index />
+          <Route path="/foo" element={<Foo />} />
+          <Route path="/bar" element={<Bar />} />
         </Routes>
       </BrowserRouter>
     </div>
