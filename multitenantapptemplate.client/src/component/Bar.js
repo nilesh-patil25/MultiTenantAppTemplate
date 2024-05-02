@@ -52,7 +52,7 @@ const Bar = () => {
 
   return (
     <>
-      <div style={{ backgroundColor: "#FFE5CC" }}>
+      <div>
         <h1>Tenant || Bar</h1>
         <button onClick={handleButtonClick}>Upload Image</button>
         <input

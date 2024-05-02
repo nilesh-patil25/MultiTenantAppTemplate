@@ -1,24 +1,43 @@
-import "./App.css";
-import Bar from "./component/Bar";
-import Foo from "./component/Foo";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { useEffect } from 'react';
+import { BrowserRouter,useLocation, Route, Routes } from 'react-router-dom';
+import './App.css'; 
+import Bar from './component/Bar';
+import Foo from './component/Foo';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <>
-          <Link to="/foo"></Link>
-
-          <Link to="/bar"></Link>
-        </>
-        <Routes>
-          <Route path="/" element={<Foo />} index />
-          <Route path="/foo" element={<Foo />} />
-          <Route path="/bar" element={<Bar />} />
-        </Routes>
+        <AppContent />
       </BrowserRouter>
     </div>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+      if (location.pathname === '/foo') {
+        document.body.style.backgroundColor = '#c89666';
+      } else if(location.pathname === '/bar') {
+        document.body.style.backgroundColor = '#2d545e'; 
+      } 
+    }
+  }, [location]);
+
+  return (
+    <>
+      {/* <Link to="/foo">Foo</Link>
+      <Link to="/bar">Bar</Link> */}
+      <Routes>
+        <Route path="/" element={<Foo />} index />
+        <Route path="/foo" element={<Foo />} />
+        <Route path="/bar" element={<Bar />} />
+      </Routes>
+    </>
   );
 }
 
