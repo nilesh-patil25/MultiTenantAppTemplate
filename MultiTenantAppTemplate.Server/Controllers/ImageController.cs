@@ -36,7 +36,7 @@ namespace MultiTenantAppTemplate.Server.Controllers
                 var uploadsPath = Path.Combine(basePath, host);
                 Directory.CreateDirectory(uploadsPath);
 
-                var fileName = $"banner_{file.FileName}";
+                var fileName = $"{host}_banner_{file.FileName}";
                 var filePath = Path.Combine(uploadsPath, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -66,7 +66,7 @@ namespace MultiTenantAppTemplate.Server.Controllers
                 var uploadsPath = Path.Combine(basePath, host);
                 Directory.CreateDirectory(uploadsPath);
 
-                var fileName = $"favicon_{file.FileName}";
+                var fileName = $"{host}_favicon_{file.FileName}";
                 var filePath = Path.Combine(uploadsPath, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -160,39 +160,6 @@ namespace MultiTenantAppTemplate.Server.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while retrieving images: {ex.Message}");
-            }
-        }
-
-        [HttpGet("GetFileFromPath")]
-        public IActionResult GetFile(string relativePath)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(relativePath))
-                {
-                    return BadRequest("File path cannot be null or empty.");
-                }
-
-                if (!System.IO.File.Exists(relativePath))
-                {
-                    return NotFound($"File not found at path '{relativePath}'.");
-                }
-
-                byte[] fileBytes = System.IO.File.ReadAllBytes(relativePath);
-
-                string contentType = "application/octet-stream"; // Default content type
-                if (Path.HasExtension(relativePath))
-                {
-                    string fileExtension = Path.GetExtension(relativePath);
-                    contentType = _imageService.GetContentType(fileExtension);
-                }
-
-                // Return the file as a download
-                return File(fileBytes, contentType, Path.GetFileName(relativePath));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while downloading file: {ex.Message}");
             }
         }
         #endregion

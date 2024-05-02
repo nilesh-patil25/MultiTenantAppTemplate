@@ -52,7 +52,7 @@ const Foo = () => {
 
   return (
     <>
-      <div style={{ backgroundColor: "grey" }}>
+      <div>
         <h1>Tenant || Foo</h1>
         <button onClick={handleButtonClick}>Upload Image</button>
         <input
