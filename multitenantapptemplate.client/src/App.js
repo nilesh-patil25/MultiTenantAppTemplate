@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect,useState} from "react";
 import { BrowserRouter, useLocation, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Bar from "./component/Bar";
 import Foo from "./component/Foo";
+import axios from 'axios';
+
 
 function App() {
   return (
@@ -16,19 +18,24 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
+  const [backgroundColor, setBackgroundColor] = useState('');
 
   useEffect(() => {
-    const rootElement = document.getElementById("root");
-    if (rootElement) {
-      if (location.pathname === "/foo") {
-        document.body.style.backgroundColor = "#a78436";
-      } else if (location.pathname === "/bar") {
-        document.body.style.backgroundColor = "#2d545e";
-      } else if (location.pathname === "/") {
-        document.body.style.backgroundColor = "#a78436";
+    const fetchBackgroundColor = async () => {
+      try {
+        const response = await axios.get(`https://localhost:7213/api/Tenant/GetTenantTheme?tenantName=${location.pathname.slice(1)}`);
+        setBackgroundColor(response.data.backgroundColor);
+      } catch (error) {
+        console.error('Error fetching background color:', error);
       }
-    }
+    };
+
+    fetchBackgroundColor();
   }, [location]);
+
+  useEffect(() => {
+    document.body.style.backgroundColor = backgroundColor;
+  }, [backgroundColor]);
 
   return (
     <>
