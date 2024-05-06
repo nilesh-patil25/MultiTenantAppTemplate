@@ -58,6 +58,15 @@ namespace MultiTenantAppTemplate.Server.Controllers
             }
         }
 
+
+        [HttpGet("GetTenantTheme")]
+        public IActionResult GetBackgroundColor(string? tenantName)
+        {
+            string backgroundColor = _tenantService.GetBackgroundThemeForTenant(tenantName);
+
+            return Ok(new { backgroundColor });
+        }
+
         #endregion
     }
 }

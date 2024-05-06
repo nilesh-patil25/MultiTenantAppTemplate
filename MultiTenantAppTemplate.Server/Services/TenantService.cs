@@ -24,5 +24,17 @@ namespace MultiTenantAppTemplate.Server.Services
             var tenant = _tenants.FirstOrDefault(t => t.Host.Equals(host, StringComparison.OrdinalIgnoreCase));
             return tenant;
         }
+        public string GetBackgroundThemeForTenant(string tenantName)
+        {
+            if (tenantName == "foo")
+                return "#a78436";
+            else if (tenantName == "bar")
+                return "#2d545e";
+            else 
+                return "#a78436";
+
+        }
     }
+            
+    
 }

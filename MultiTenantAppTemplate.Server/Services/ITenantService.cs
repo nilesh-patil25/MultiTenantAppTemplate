@@ -6,5 +6,7 @@ namespace MultiTenantAppTemplate.Server.Services
     {
         List<Tenant> GetTenants();
         Tenant GetTenantByHost(string host);
+        string GetBackgroundThemeForTenant(string tenantName);
+
     }
 }
